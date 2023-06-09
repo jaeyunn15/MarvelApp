@@ -1,0 +1,5 @@
+<resources>
+    <string name="bottom_home">Home</string>
+    <string name="bottom_favorite">Favorite</string>
+    <string name="search_hint_text">검색어를 입력</string>
+</resources>
