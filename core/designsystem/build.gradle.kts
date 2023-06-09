@@ -37,7 +37,7 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = "1.4.0"
     }
-    namespace = "com.project.marvelapp.designsystem"
+    namespace = "com.project.marvelapp.core.designsystem"
 }
 
 dependencies {

@@ -32,11 +32,11 @@ android {
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_17.toString()
     }
-    namespace = "com.project.marvelapp.data"
+    namespace = "com.project.marvelapp.core.data"
 }
 
 dependencies {
-    //implementation(project(":core:domain"))
+    implementation(project(":core:domain"))
 
     implementation(AndroidX.CORE_KTX)
 
@@ -59,6 +59,7 @@ dependencies {
 
     //hilt
     implementation(Google.HILT_ANDROID)
+    implementation(project(mapOf("path" to ":core:domain")))
     kapt(Google.HILT_ANDROID_COMPILER)
 
     implementation(AndroidX.PREFERENCE)

@@ -32,7 +32,7 @@ android {
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_17.toString()
     }
-    namespace = "com.project.marvelapp.domain"
+    namespace = "com.project.marvelapp.core.domain"
 }
 
 
