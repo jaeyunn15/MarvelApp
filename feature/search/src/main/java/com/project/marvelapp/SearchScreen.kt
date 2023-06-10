@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -26,9 +27,6 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.paging.LoadState
-import androidx.paging.compose.LazyPagingItems
-import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.rememberAsyncImagePainter
 import com.project.marvelapp.component.CustomProgressBar
 import com.project.marvelapp.component.SearchTopBar
@@ -66,67 +64,71 @@ fun SearchResultScreen(
     LaunchedEffect(searchKeyWord) {
         viewModel.updateKeyword(searchKeyWord)
     }
-    val characterList = viewModel.homeUiState.collectAsLazyPagingItems()
-    CharacterScreen(
-        characters = characterList,
-        onClickEvent = {
-            //navController.navigate("Character/${it.id}")
-        },
-        onErrorToast = {
+    val viewState = viewModel.viewState.collectAsStateWithLifecycle().value
 
-        }
+    CharacterScreen(
+        viewState = viewState,
+        onLoadMore = viewModel::onLoadMoreCharacters,
+        onClickEvent = {},
+        onErrorToast = {}
     )
 }
 
 @Composable
 fun CharacterScreen(
-    characters: LazyPagingItems<CharacterEntity>,
+    viewState: SearchUiState,
     modifier: Modifier = Modifier,
+    onLoadMore: () -> Unit,
     onClickEvent: (CharacterEntity) -> Unit,
     onErrorToast: (message: String) -> Unit
 ) {
-    when (characters.loadState.refresh) {
-        LoadState.Loading -> {}
-        is LoadState.Error -> {
-            onErrorToast((characters.loadState.refresh as LoadState.Error).error.message.orEmpty())
-        }
-
-        else -> {
-            LazyVerticalGrid(columns = GridCells.Fixed(2)) {
-                items(characters.itemCount) { index ->
-                    characters[index]?.let {
-                        ImageWithFavorite(
-                            item = it,
-                            onClickEvent = onClickEvent,
-                            isFavorite = false,
-                        )
-                    }
-                }
+    when(viewState) {
+        is SearchUiState.Error -> {
+            viewState.msg?.let {
+                ErrorMessageHolder(it)
             }
         }
-    }
-
-    when (characters.loadState.append) {
-        LoadState.Loading -> {
+        is SearchUiState.Loading -> {
             CustomProgressBar()
         }
-        is LoadState.Error -> {
-            onErrorToast((characters.loadState.refresh as LoadState.Error).error.message.orEmpty())
-        }
-
-        else -> {
-            LazyVerticalGrid(columns = GridCells.Fixed(2)) {
-                items(characters.itemCount) { index ->
-                    characters[index]?.let {
-                        ImageWithFavorite(
-                            item = it,
-                            onClickEvent = onClickEvent,
-                            isFavorite = false,
-                        )
-                    }
+        is SearchUiState.Success -> {
+            val lazyListState = rememberLazyGridState().apply {
+                OnBottomReached(
+                    onLoadMore = onLoadMore,
+                    buffer = 0,
+                )
+            }
+            LazyVerticalGrid(
+                state = lazyListState,
+                columns = GridCells.Fixed(2)
+            ) {
+                items(
+                    count = viewState.characters.size
+                ) { index ->
+                    ImageWithFavorite(
+                        item = viewState.characters[index],
+                        onClickEvent = onClickEvent,
+                        isFavorite = false,
+                    )
                 }
             }
         }
+        SearchUiState.Wait -> Unit
+    }
+}
+
+@Composable
+fun ErrorMessageHolder(
+    msg: String
+) {
+    Box(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        Text(
+            text = msg, textAlign = TextAlign.Center,
+            modifier = Modifier,
+            fontSize = TextUnit.Unspecified
+        )
     }
 }
 

@@ -1,13 +1,17 @@
 package com.project.marvelapp
 
-import androidx.paging.PagingData
 import com.project.marvelapp.entity.CharacterEntity
 
-sealed interface SearchUiState {
-    object Loading : SearchUiState
+sealed class SearchUiState {
+    object Wait : SearchUiState()
+
+    object Loading : SearchUiState()
 
     data class Success(
-        val characters: PagingData<CharacterEntity>
-    ) : SearchUiState
+        val characters: List<CharacterEntity>
+    ) : SearchUiState()
 
+    data class Error(
+        val msg: String? = null
+    ) : SearchUiState()
 }
