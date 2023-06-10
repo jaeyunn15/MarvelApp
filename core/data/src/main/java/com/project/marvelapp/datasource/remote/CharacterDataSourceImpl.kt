@@ -2,9 +2,8 @@ package com.project.marvelapp.datasource.remote
 
 import com.project.marvelapp.api.CharacterService
 import com.project.marvelapp.di.IoDispatcher
-import com.project.marvelapp.model.CharacterDataWrapperResponse
+import com.project.marvelapp.model.response.CharacterDataWrapperResponse
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 

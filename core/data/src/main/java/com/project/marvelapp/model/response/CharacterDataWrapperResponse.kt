@@ -1,7 +1,6 @@
-package com.project.marvelapp.model
+package com.project.marvelapp.model.response
 
 import com.google.gson.annotations.SerializedName
-import com.project.marvelapp.model.CharacterDataContainerResponse
 
 data class CharacterDataWrapperResponse(
     @SerializedName("code")

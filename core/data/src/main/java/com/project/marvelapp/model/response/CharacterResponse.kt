@@ -1,4 +1,4 @@
-package com.project.marvelapp.model
+package com.project.marvelapp.model.response
 
 import com.google.gson.annotations.SerializedName
 
@@ -16,7 +16,10 @@ data class CharacterResponse(
     val name: String,
 
     @SerializedName("thumbnail")
-    val thumbnail: ThumbnailResponse
+    val thumbnail: ThumbnailResponse,
+
+    @SerializedName("savedTime")
+    val savedTime: Long? = null
 )
 
 data class ThumbnailResponse(

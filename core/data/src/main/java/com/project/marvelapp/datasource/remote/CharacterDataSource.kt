@@ -1,6 +1,6 @@
 package com.project.marvelapp.datasource.remote
 
-import com.project.marvelapp.model.CharacterDataWrapperResponse
+import com.project.marvelapp.model.response.CharacterDataWrapperResponse
 
 
 interface CharacterDataSource {

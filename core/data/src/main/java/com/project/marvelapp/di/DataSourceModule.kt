@@ -1,5 +1,7 @@
 package com.project.marvelapp.di
 
+import com.project.marvelapp.datasource.local.UserPrefDataSource
+import com.project.marvelapp.datasource.local.UserPrefDataSourceImpl
 import com.project.marvelapp.datasource.remote.CharacterDataSource
 import com.project.marvelapp.datasource.remote.CharacterDataSourceImpl
 import dagger.Binds
@@ -15,4 +17,9 @@ interface DataSourceModule {
     fun bindsCharacterDataSource(
         characterDataSource: CharacterDataSourceImpl
     ): CharacterDataSource
+
+    @Binds
+    fun bindsUserPrefDataSource(
+        userPrefDataSource: UserPrefDataSourceImpl
+    ): UserPrefDataSource
 }

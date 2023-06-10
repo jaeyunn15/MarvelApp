@@ -1,6 +1,6 @@
 package com.project.marvelapp.api
 
-import com.project.marvelapp.model.CharacterDataWrapperResponse
+import com.project.marvelapp.model.response.CharacterDataWrapperResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
 
