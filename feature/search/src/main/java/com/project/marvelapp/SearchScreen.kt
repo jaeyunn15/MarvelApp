@@ -50,7 +50,8 @@ fun SearchScreen(
         )
         Box(modifier = Modifier.weight(1f)) {
             SearchResultScreen(
-                searchKeyWord = viewModel.searchKeyword.collectAsStateWithLifecycle().value.getOrNull().orEmpty()
+                searchKeyWord = viewModel.searchKeyword.collectAsStateWithLifecycle().value.getOrNull()
+                    .orEmpty()
             )
         }
     }
@@ -82,15 +83,17 @@ fun CharacterScreen(
     onClickEvent: (CharacterEntity) -> Unit,
     onErrorToast: (message: String) -> Unit
 ) {
-    when(viewState) {
+    when (viewState) {
         is SearchUiState.Error -> {
             viewState.msg?.let {
                 ErrorMessageHolder(it)
             }
         }
+
         is SearchUiState.Loading -> {
             CustomProgressBar()
         }
+
         is SearchUiState.Success -> {
             val lazyListState = rememberLazyGridState().apply {
                 OnBottomReached(
@@ -98,22 +101,38 @@ fun CharacterScreen(
                     buffer = 0,
                 )
             }
-            LazyVerticalGrid(
-                state = lazyListState,
-                columns = GridCells.Fixed(2)
-            ) {
-                items(
-                    count = viewState.characters.size
-                ) { index ->
-                    ImageWithFavorite(
-                        item = viewState.characters[index],
-                        onClickEvent = onClickEvent,
-                        isFavorite = false,
-                    )
+            if (viewState.characters.isEmpty()) {
+                ErrorMessageHolder("검색 결과가 없습니다.")
+            } else {
+                LazyVerticalGrid(
+                    state = lazyListState,
+                    columns = GridCells.Fixed(2)
+                ) {
+                    items(
+                        count = viewState.characters.size
+                    ) { index ->
+                        ImageWithFavorite(
+                            item = viewState.characters[index],
+                            onClickEvent = onClickEvent,
+                            isFavorite = false,
+                        )
+                    }
                 }
             }
         }
-        SearchUiState.Wait -> Unit
+
+        SearchUiState.Wait -> {
+            DefaultMessageHolder()
+        }
+    }
+}
+
+@Composable
+fun DefaultMessageHolder() {
+    Box(
+        modifier = Modifier.fillMaxSize()
+    ) {
+
     }
 }
 
