@@ -8,6 +8,7 @@ import com.project.marvelapp.entity.CharacterEntity
 import com.project.marvelapp.getSharedPreferenceFlow
 import com.project.marvelapp.mapper.CharacterMapper.toCharacterEntity
 import com.project.marvelapp.mapper.CharacterMapper.toCharacterVO
+import com.project.marvelapp.model.vo.CharacterVO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.flow.map
@@ -29,10 +30,19 @@ class UserPrefRepositoryImpl @Inject constructor(
             }.toHashSet()
         }.conflate()
 
+    @RequiresApi(Build.VERSION_CODES.N)
     override fun addCharacter(character: CharacterEntity) {
-        //todo 5개 체크해서 넘으면 추가 안됨.
-        userPrefDataSource.favoriteCharacterSets = userPrefDataSource.favoriteCharacterSets.apply {
-            add(character.toCharacterVO())
+        if (userPrefDataSource.favoriteCharacterSets.size >= 5) {
+            userPrefDataSource.favoriteCharacterSets = userPrefDataSource.favoriteCharacterSets.apply {
+                removeIf {
+                    it.id == getOldCharacter().id
+                }
+                add(character.toCharacterVO())
+            }
+        } else {
+            userPrefDataSource.favoriteCharacterSets = userPrefDataSource.favoriteCharacterSets.apply {
+                add(character.toCharacterVO())
+            }
         }
     }
 
@@ -45,4 +55,6 @@ class UserPrefRepositoryImpl @Inject constructor(
         }
     }
 
+    private fun getOldCharacter(): CharacterVO =
+        userPrefDataSource.favoriteCharacterSets.sortedBy { it.savedTime }[0]
 }

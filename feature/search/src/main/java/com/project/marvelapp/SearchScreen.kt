@@ -82,8 +82,7 @@ fun SearchResultScreen(
             } else {
                 viewModel.addFavorite(it)
             }
-        },
-        onErrorToast = {}
+        }
     )
 }
 
@@ -92,8 +91,7 @@ fun CharacterScreen(
     viewState: SearchUiState,
     modifier: Modifier = Modifier,
     onLoadMore: () -> Unit,
-    onClickEvent: (CharacterUiModel) -> Unit,
-    onErrorToast: (message: String) -> Unit
+    onClickEvent: (CharacterUiModel) -> Unit
 ) {
     when (viewState) {
         is SearchUiState.Error -> {
