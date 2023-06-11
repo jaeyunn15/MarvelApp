@@ -6,7 +6,7 @@ sealed class SearchUiState {
     object Loading : SearchUiState()
 
     data class Success(
-        val characters: List<CharacterUiModel>
+        val characters: List<com.project.marvelapp.common.CharacterUiModel>
     ) : SearchUiState()
 
     data class Error(

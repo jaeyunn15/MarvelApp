@@ -1,4 +1,4 @@
-package com.project.marvelapp.mapper
+package com.project.marvelapp
 
 import com.project.marvelapp.entity.CharacterEntity
 

@@ -34,7 +34,8 @@ import com.project.marvelapp.component.CustomProgressBar
 import com.project.marvelapp.component.OnBottomReached
 import com.project.marvelapp.component.SearchTopBar
 import com.project.marvelapp.component.loadImageData
-import com.project.marvelapp.state.CharacterUiModel
+import com.project.marvelapp.common.CharacterUiModel
+import com.project.marvelapp.component.ErrorMessageHolder
 import com.project.marvelapp.state.SearchUiState
 
 @Composable
@@ -146,20 +147,6 @@ fun DefaultMessageHolder() {
     }
 }
 
-@Composable
-fun ErrorMessageHolder(
-    msg: String
-) {
-    Box(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        Text(
-            text = msg, textAlign = TextAlign.Center,
-            modifier = Modifier,
-            fontSize = TextUnit.Unspecified
-        )
-    }
-}
 
 @Composable
 fun ImageWithFavorite(
