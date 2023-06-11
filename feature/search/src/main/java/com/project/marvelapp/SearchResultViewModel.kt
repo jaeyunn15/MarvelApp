@@ -5,6 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.project.marvelapp.entity.CharacterEntity
 import com.project.marvelapp.mapper.UiMapper.toEntity
 import com.project.marvelapp.mapper.UiMapper.toUiModel
+import com.project.marvelapp.state.CharacterUiModel
+import com.project.marvelapp.state.SearchUiState
 import com.project.marvelapp.usecase.AddFavoriteCharacterUseCase
 import com.project.marvelapp.usecase.DeleteFavoriteCharacterUseCase
 import com.project.marvelapp.usecase.GetCharactersUseCase

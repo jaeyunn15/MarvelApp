@@ -34,7 +34,8 @@ import com.project.marvelapp.component.CustomProgressBar
 import com.project.marvelapp.component.OnBottomReached
 import com.project.marvelapp.component.SearchTopBar
 import com.project.marvelapp.component.loadImageData
-import com.project.marvelapp.entity.CharacterEntity
+import com.project.marvelapp.state.CharacterUiModel
+import com.project.marvelapp.state.SearchUiState
 
 @Composable
 fun SearchScreen(

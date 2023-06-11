@@ -1,4 +1,4 @@
-package com.project.marvelapp
+package com.project.marvelapp.state
 
 sealed class SearchUiState {
     object Wait : SearchUiState()
