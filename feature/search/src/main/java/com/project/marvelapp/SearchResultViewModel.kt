@@ -94,7 +94,9 @@ class SearchResultViewModel @Inject constructor(
     private fun fetchResults(keyword: String, offset: Int) = viewModelScope.launch {
         getCharactersUseCase(keyword, offset)
             .onEach { result ->
-                if (result.size == _characterList.value?.size) {
+                if (result.isEmpty()) {
+                    _viewState.update { SearchUiState.Error("검색 결과가 없습니다.") }
+                } else if (offset > 0 && result.size == _characterList.value?.size) {
                     _viewState.update {
                         SearchUiState.Success(
                             characters = (it as SearchUiState.Success).characters,
