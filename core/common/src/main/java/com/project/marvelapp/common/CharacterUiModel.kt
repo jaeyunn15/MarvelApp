@@ -1,4 +1,4 @@
-package com.project.marvelapp.state
+package com.project.marvelapp.common
 
 data class CharacterUiModel(
     val id: Int = -1,
