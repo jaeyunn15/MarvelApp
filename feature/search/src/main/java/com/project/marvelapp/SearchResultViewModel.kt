@@ -56,6 +56,7 @@ class SearchResultViewModel @Inject constructor(
                 if (keyword.length >= 2) {
                     _viewState.update { SearchUiState.Loading }
                     offset = 0
+                    _characterList.update { null }
                     fetchResults(keyword, offset)
                 } else if (keyword.isNotEmpty()) {
                     _viewState.update { SearchUiState.Error("최소 2글자 입력 해야 합니다.") }
