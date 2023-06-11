@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.Scaffold
@@ -33,6 +35,7 @@ import coil.compose.rememberAsyncImagePainter
 import com.project.marvelapp.common.CharacterUiModel
 import com.project.marvelapp.component.CustomProgressBar
 import com.project.marvelapp.component.ErrorMessageHolder
+import com.project.marvelapp.component.MessageBoxLayout
 import com.project.marvelapp.component.loadImageData
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
@@ -56,22 +59,28 @@ fun FavoriteScreen(
                 }
             }
             is FavoriteUiState.Success -> {
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(2)
-                ) {
-                    items(
-                        count = viewState.characters.size
-                    ) { index ->
-                        ImageWithFavorite(
-                            item = viewState.characters[index],
-                            onClickEvent = {
-                                if (it.isFavorite) {
-                                    viewModel.removeFavorite(it)
-                                } else {
-                                    viewModel.addFavorite(it)
+                if (viewState.characters.isEmpty()){
+                    MessageBoxLayout(
+                        message = "좋아요를 누른 아이템이 없습니다."
+                    )
+                } else {
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(2)
+                    ) {
+                        items(
+                            count = viewState.characters.size
+                        ) { index ->
+                            ImageWithFavorite(
+                                item = viewState.characters[index],
+                                onClickEvent = {
+                                    if (it.isFavorite) {
+                                        viewModel.removeFavorite(it)
+                                    } else {
+                                        viewModel.addFavorite(it)
+                                    }
                                 }
-                            }
-                        )
+                            )
+                        }
                     }
                 }
             }
@@ -93,16 +102,9 @@ fun ImageWithFavorite(
 
     val aspectRatio = remember { (5f / 5f) }
 
-    val bg = if (item.isFavorite) {
-        Color.Blue
-    } else {
-        Color.Transparent
-    }
-
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(bg)
             .padding(4.dp)
             .clickable {
                 onClickEvent(item)
