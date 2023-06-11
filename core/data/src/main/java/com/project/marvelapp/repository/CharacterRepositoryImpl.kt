@@ -15,29 +15,39 @@ class CharacterRepositoryImpl @Inject constructor(
 
     override var cacheList: MutableList<CharacterEntity> = mutableListOf()
 
-    override suspend fun getCharacters(keyword: String, offset: Int): Flow<List<CharacterEntity>> = flow {
-        if (offset == 0) {
-            cacheList.clear()
-            isPaginationAvailable = true
-        }
-
-        if (isPaginationAvailable) {
-            val result = characterDataSource.getCharacters(
-                keyword = keyword,
-                limit = 10,
-                offset = offset
-            )
-
-            if (offset >= result.characterDataContainerResponse.total) {
-                isPaginationAvailable = false
+    override suspend fun getCharacters(keyword: String, offset: Int): Flow<List<CharacterEntity>> =
+        flow {
+            if (offset == 0) {
+                cacheList.clear()
+                isPaginationAvailable = true
             }
 
-            if (result.status == "Ok") {
-                result.characterDataContainerResponse.results.map {
-                    cacheList.add(it.toCharacterEntity())
+            if (isPaginationAvailable) {
+                val result = characterDataSource.getCharacters(
+                    keyword = keyword,
+                    limit = 10,
+                    offset = offset
+                )
+
+                val cacheResponseSize =
+                    (offset + result.characterDataContainerResponse.results.size)
+
+                if (cacheResponseSize >= result.characterDataContainerResponse.total) {
+                    isPaginationAvailable = false
                 }
+
+                if (result.status == "Ok") {
+                    if (result.characterDataContainerResponse.results.isEmpty()) {
+                        emit(emptyList())
+                    } else {
+                        result.characterDataContainerResponse.results.map {
+                            cacheList.add(it.toCharacterEntity())
+                        }
+                        emit(cacheList)
+                    }
+                }
+            } else {
                 emit(cacheList)
             }
         }
-    }
 }
