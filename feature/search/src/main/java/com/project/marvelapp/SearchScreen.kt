@@ -1,6 +1,7 @@
 package com.project.marvelapp
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,6 +21,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
@@ -29,7 +31,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.rememberAsyncImagePainter
 import com.project.marvelapp.component.CustomProgressBar
+import com.project.marvelapp.component.OnBottomReached
 import com.project.marvelapp.component.SearchTopBar
+import com.project.marvelapp.component.loadImageData
 import com.project.marvelapp.entity.CharacterEntity
 
 @Composable
@@ -70,7 +74,13 @@ fun SearchResultScreen(
     CharacterScreen(
         viewState = viewState,
         onLoadMore = viewModel::onLoadMoreCharacters,
-        onClickEvent = {},
+        onClickEvent = {
+            if (it.isFavorite) {
+                viewModel.removeFavorite(it)
+            } else {
+                viewModel.addFavorite(it)
+            }
+        },
         onErrorToast = {}
     )
 }
@@ -80,7 +90,7 @@ fun CharacterScreen(
     viewState: SearchUiState,
     modifier: Modifier = Modifier,
     onLoadMore: () -> Unit,
-    onClickEvent: (CharacterEntity) -> Unit,
+    onClickEvent: (CharacterUiModel) -> Unit,
     onErrorToast: (message: String) -> Unit
 ) {
     when (viewState) {
@@ -113,8 +123,7 @@ fun CharacterScreen(
                     ) { index ->
                         ImageWithFavorite(
                             item = viewState.characters[index],
-                            onClickEvent = onClickEvent,
-                            isFavorite = false,
+                            onClickEvent = onClickEvent
                         )
                     }
                 }
@@ -153,9 +162,8 @@ fun ErrorMessageHolder(
 
 @Composable
 fun ImageWithFavorite(
-    item: CharacterEntity,
-    onClickEvent: (CharacterEntity) -> Unit,
-    isFavorite: Boolean,
+    item: CharacterUiModel,
+    onClickEvent: (CharacterUiModel) -> Unit
 ) {
     val painter = rememberAsyncImagePainter(
         model = loadImageData(
@@ -166,9 +174,16 @@ fun ImageWithFavorite(
 
     val aspectRatio = remember { (5f / 5f) }
 
+    val bg = if (item.isFavorite) {
+        Color.Blue
+    } else {
+        Color.Transparent
+    }
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
+            .background(bg)
             .padding(4.dp)
             .clickable {
                 onClickEvent(item)

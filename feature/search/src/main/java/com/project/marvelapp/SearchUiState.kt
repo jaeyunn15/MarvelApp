@@ -1,14 +1,12 @@
 package com.project.marvelapp
 
-import com.project.marvelapp.entity.CharacterEntity
-
 sealed class SearchUiState {
     object Wait : SearchUiState()
 
     object Loading : SearchUiState()
 
     data class Success(
-        val characters: List<CharacterEntity>
+        val characters: List<CharacterUiModel>
     ) : SearchUiState()
 
     data class Error(
