@@ -109,9 +109,7 @@ fun CharacterScreen(
                             buffer = 0,
                         )
                     }
-                    if (viewState.characters.isEmpty()) {
-                        MessageBoxLayout(message = "검색 결과가 없습니다.")
-                    } else {
+                    if (viewState.characters.isNotEmpty()) {
                         Box(
                             modifier = Modifier.fillMaxHeight()
                         ) {
