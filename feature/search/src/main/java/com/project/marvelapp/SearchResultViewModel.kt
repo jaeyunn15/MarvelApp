@@ -56,6 +56,7 @@ class SearchResultViewModel @Inject constructor(
                 if (keyword.length >= 2) {
                     _viewState.update { SearchUiState.Loading }
                     offset = 0
+                    _characterList.update { null }
                     fetchResults(keyword, offset)
                 } else if (keyword.isNotEmpty()) {
                     _viewState.update { SearchUiState.Error("최소 2글자 입력 해야 합니다.") }
@@ -93,7 +94,9 @@ class SearchResultViewModel @Inject constructor(
     private fun fetchResults(keyword: String, offset: Int) = viewModelScope.launch {
         getCharactersUseCase(keyword, offset)
             .onEach { result ->
-                if (result.size == _characterList.value?.size) {
+                if (result.isEmpty()) {
+                    _viewState.update { SearchUiState.Error("검색 결과가 없습니다.") }
+                } else if (offset > 0 && result.size == _characterList.value?.size) {
                     _viewState.update {
                         SearchUiState.Success(
                             characters = (it as SearchUiState.Success).characters,

@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -108,10 +109,10 @@ fun CharacterScreen(
                             buffer = 0,
                         )
                     }
-                    if (viewState.characters.isEmpty()) {
-                        MessageBoxLayout(message = "검색 결과가 없습니다.")
-                    } else {
-                        Box {
+                    if (viewState.characters.isNotEmpty()) {
+                        Box(
+                            modifier = Modifier.fillMaxHeight()
+                        ) {
                             LazyVerticalGrid(
                                 state = lazyListState,
                                 columns = GridCells.Fixed(2)
