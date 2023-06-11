@@ -2,10 +2,10 @@ package com.project.marvelapp
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.project.marvelapp.common.CharacterUiModel
 import com.project.marvelapp.entity.CharacterEntity
 import com.project.marvelapp.mapper.UiMapper.toEntity
 import com.project.marvelapp.mapper.UiMapper.toUiModel
-import com.project.marvelapp.common.CharacterUiModel
 import com.project.marvelapp.state.SearchUiState
 import com.project.marvelapp.usecase.AddFavoriteCharacterUseCase
 import com.project.marvelapp.usecase.DeleteFavoriteCharacterUseCase
@@ -21,9 +21,9 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -55,11 +55,10 @@ class SearchResultViewModel @Inject constructor(
             .mapLatest { keyword -> // 새로운 플로우 방출 시, 이전 계산 로직 취소 처리
                 if (keyword.length >= 2) {
                     _viewState.update { SearchUiState.Loading }
-                    _characterList.update { null }
                     offset = 0
                     fetchResults(keyword, offset)
                 } else if (keyword.isNotEmpty()) {
-                    _viewState.update { SearchUiState.Error("최소 2글자 입력해야 합니다.") }
+                    _viewState.update { SearchUiState.Error("최소 2글자 입력 해야 합니다.") }
                 } else {
                     _viewState.update { SearchUiState.Wait }
                 }
@@ -70,23 +69,41 @@ class SearchResultViewModel @Inject constructor(
     }
 
     private fun collectResultAsUiModel() = viewModelScope.launch {
-        _characterList.filterNotNull().combine(getFavoriteCharacterUseCase()) { result, favoriteSet ->
-            result.map { it.toUiModel(favoriteSet.contains(it)) }
-        }.map { list ->
-            _viewState.update { SearchUiState.Success(list) }
+        _characterList.filterNotNull()
+            .combine(getFavoriteCharacterUseCase()) { result, favoriteSet ->
+                result.map { it.toUiModel(favoriteSet.contains(it)) }
+            }.map { list ->
+            _viewState.update { SearchUiState.Success(list, loadMoreProgress = false) }
         }.collect()
     }
 
     fun onLoadMoreCharacters() {
         viewModelScope.launch {
+            _viewState.update {
+                SearchUiState.Success(
+                    characters = (it as SearchUiState.Success).characters,
+                    loadMoreProgress = true
+                )
+            }
             offset += 10
             fetchResults(_keyword.value, offset)
         }
     }
 
     private fun fetchResults(keyword: String, offset: Int) = viewModelScope.launch {
-        val result = getCharactersUseCase(keyword, offset).firstOrNull()
-        _characterList.update { result }
+        getCharactersUseCase(keyword, offset)
+            .onEach { result ->
+                if (result.size == _characterList.value?.size) {
+                    _viewState.update {
+                        SearchUiState.Success(
+                            characters = (it as SearchUiState.Success).characters,
+                            loadMoreProgress = false
+                        )
+                    }
+                } else {
+                    _characterList.update { result.toList() }
+                }
+            }.collect()
     }
 
     fun updateKeyword(keyword: String) {

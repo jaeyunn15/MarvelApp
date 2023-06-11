@@ -15,6 +15,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -30,12 +32,11 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.rememberAsyncImagePainter
-import com.project.marvelapp.component.CustomProgressBar
+import com.project.marvelapp.common.CharacterUiModel
+import com.project.marvelapp.component.MessageBoxLayout
 import com.project.marvelapp.component.OnBottomReached
 import com.project.marvelapp.component.SearchTopBar
 import com.project.marvelapp.component.loadImageData
-import com.project.marvelapp.common.CharacterUiModel
-import com.project.marvelapp.component.ErrorMessageHolder
 import com.project.marvelapp.state.SearchUiState
 
 @Composable
@@ -93,58 +94,65 @@ fun CharacterScreen(
     onLoadMore: () -> Unit,
     onClickEvent: (CharacterUiModel) -> Unit
 ) {
-    when (viewState) {
-        is SearchUiState.Error -> {
-            viewState.msg?.let {
-                ErrorMessageHolder(it)
-            }
-        }
-
-        is SearchUiState.Loading -> {
-            CustomProgressBar()
-        }
-
-        is SearchUiState.Success -> {
-            val lazyListState = rememberLazyGridState().apply {
-                OnBottomReached(
-                    onLoadMore = onLoadMore,
-                    buffer = 0,
-                )
-            }
-            if (viewState.characters.isEmpty()) {
-                ErrorMessageHolder("검색 결과가 없습니다.")
-            } else {
-                LazyVerticalGrid(
-                    state = lazyListState,
-                    columns = GridCells.Fixed(2)
-                ) {
-                    items(
-                        count = viewState.characters.size
-                    ) { index ->
-                        ImageWithFavorite(
-                            item = viewState.characters[index],
-                            onClickEvent = onClickEvent
+    Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center) {
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth(), contentAlignment = Alignment.Center
+        ) {
+            when (viewState) {
+                is SearchUiState.Success -> {
+                    val lazyListState = rememberLazyGridState().apply {
+                        OnBottomReached(
+                            onLoadMore = onLoadMore,
+                            buffer = 0,
                         )
                     }
+                    if (viewState.characters.isEmpty()) {
+                        MessageBoxLayout(message = "검색 결과가 없습니다.")
+                    } else {
+                        Box {
+                            LazyVerticalGrid(
+                                state = lazyListState,
+                                columns = GridCells.Fixed(2)
+                            ) {
+                                items(
+                                    count = viewState.characters.size
+                                ) { index ->
+                                    ImageWithFavorite(
+                                        item = viewState.characters[index],
+                                        onClickEvent = onClickEvent
+                                    )
+                                }
+                            }
+                            if (viewState.loadMoreProgress) {
+                                LinearProgressIndicator(
+                                    modifier = Modifier
+                                        .align(Alignment.BottomCenter)
+                                        .fillMaxWidth()
+                                )
+                            }
+                        }
+                    }
+                }
+
+                is SearchUiState.Error -> {
+                    viewState.msg?.let {
+                        MessageBoxLayout(message = it)
+                    }
+                }
+
+                SearchUiState.Wait -> Unit
+
+                SearchUiState.Loading -> {
+                    CircularProgressIndicator(
+                        modifier = modifier.align(Alignment.Center)
+                    )
                 }
             }
         }
-
-        SearchUiState.Wait -> {
-            DefaultMessageHolder()
-        }
     }
 }
-
-@Composable
-fun DefaultMessageHolder() {
-    Box(
-        modifier = Modifier.fillMaxSize()
-    ) {
-
-    }
-}
-
 
 @Composable
 fun ImageWithFavorite(
