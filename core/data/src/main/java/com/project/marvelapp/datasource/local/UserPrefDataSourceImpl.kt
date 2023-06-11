@@ -3,7 +3,7 @@ package com.project.marvelapp.datasource.local
 import android.content.Context
 import android.content.SharedPreferences
 import com.google.gson.Gson
-import com.project.marvelapp.fromTypeJson
+import com.google.gson.reflect.TypeToken
 import com.project.marvelapp.model.vo.CharacterVO
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
@@ -36,4 +36,7 @@ class UserPrefDataSourceImpl @Inject constructor(
     companion object {
         const val CHARACTER_FAVORITE = "character_favorite"
     }
+
+    private inline fun <reified T> Gson.fromTypeJson(json: String): T =
+        fromJson(json, object : TypeToken<T>() {}.type)
 }

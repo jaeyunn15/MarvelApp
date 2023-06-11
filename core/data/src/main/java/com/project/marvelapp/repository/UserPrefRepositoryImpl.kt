@@ -1,5 +1,7 @@
 package com.project.marvelapp.repository
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import com.project.marvelapp.datasource.local.UserPrefDataSource
 import com.project.marvelapp.datasource.local.UserPrefDataSourceImpl.Companion.CHARACTER_FAVORITE
 import com.project.marvelapp.entity.CharacterEntity
@@ -28,13 +30,19 @@ class UserPrefRepositoryImpl @Inject constructor(
         }.conflate()
 
     override fun addCharacter(character: CharacterEntity) {
+        //todo 5개 체크해서 넘으면 추가 안됨.
         userPrefDataSource.favoriteCharacterSets = userPrefDataSource.favoriteCharacterSets.apply {
             add(character.toCharacterVO())
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
     override fun removeCharacter(character: CharacterEntity) {
-        TODO("Not yet implemented")
+        userPrefDataSource.favoriteCharacterSets = userPrefDataSource.favoriteCharacterSets.apply {
+            removeIf {
+                it.id == character.id
+            }
+        }
     }
 
 }

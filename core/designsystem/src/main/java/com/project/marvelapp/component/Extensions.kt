@@ -1,7 +1,6 @@
-package com.project.marvelapp
+package com.project.marvelapp.component
 
 import android.content.Context
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
