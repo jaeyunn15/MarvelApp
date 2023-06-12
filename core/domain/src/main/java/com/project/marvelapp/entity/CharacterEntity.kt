@@ -5,5 +5,6 @@ data class CharacterEntity(
     val name: String = "",
     val description: String  = "",
     val modified: String = "",
-    val thumbnail: String = ""
+    val thumbnail: String = "",
+    val isFavorite: Boolean = false
 )

@@ -15,7 +15,7 @@ class CharacterRepositoryImpl @Inject constructor(
 
     override var cacheList: MutableList<CharacterEntity> = mutableListOf()
 
-    override suspend fun getCharacters(keyword: String, offset: Int): Flow<List<CharacterEntity>> =
+    override fun getCharacters(keyword: String, offset: Int): Flow<List<CharacterEntity>> =
         flow {
             if (offset == 0) {
                 cacheList.clear()
@@ -47,7 +47,7 @@ class CharacterRepositoryImpl @Inject constructor(
                     }
                 }
             } else {
-                emit(emptyList())
+                emit(cacheList)
             }
         }
 }
