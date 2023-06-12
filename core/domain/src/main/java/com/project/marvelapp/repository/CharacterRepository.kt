@@ -5,5 +5,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface CharacterRepository {
     var cacheList: MutableList<CharacterEntity>
-    suspend fun getCharacters(keyword: String, offset: Int): Flow<List<CharacterEntity>>
+    fun getCharacters(keyword: String, offset: Int): Flow<List<CharacterEntity>>
 }
