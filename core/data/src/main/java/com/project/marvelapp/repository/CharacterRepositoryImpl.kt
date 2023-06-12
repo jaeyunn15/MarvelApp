@@ -47,7 +47,7 @@ class CharacterRepositoryImpl @Inject constructor(
                     }
                 }
             } else {
-                emit(cacheList)
+                emit(emptyList())
             }
         }
 }

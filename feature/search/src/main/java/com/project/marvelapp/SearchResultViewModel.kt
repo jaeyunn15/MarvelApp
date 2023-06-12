@@ -12,15 +12,16 @@ import com.project.marvelapp.usecase.DeleteFavoriteCharacterUseCase
 import com.project.marvelapp.usecase.GetCharactersUseCase
 import com.project.marvelapp.usecase.GetFavoriteCharacterUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.onEach
@@ -48,35 +49,30 @@ class SearchResultViewModel @Inject constructor(
         collectKeywordState()
     }
 
-    private fun collectKeywordState() = viewModelScope.launch {
-        _keyword
-            .filter { it.isNotBlank() }
-            .debounce(300) //0.3초 딜레이
-            .mapLatest { keyword -> // 새로운 플로우 방출 시, 이전 계산 로직 취소 처리
-                if (keyword.length >= 2) {
-                    _viewState.update { SearchUiState.Loading }
-                    offset = 0
-                    _characterList.update { null }
-                    fetchResults(keyword, offset)
-                } else if (keyword.isNotEmpty()) {
-                    _viewState.update { SearchUiState.Error("최소 2글자 입력 해야 합니다.") }
-                } else {
-                    _viewState.update { SearchUiState.Wait }
-                }
-            }.catch { throwable ->
-                _viewState.update { SearchUiState.Error(throwable.toString()) }
+    private fun collectKeywordState() = _keyword
+        .filter { it.isNotBlank() }
+        .mapLatest { keyword -> // 새로운 플로우 방출 시, 이전 계산 로직 취소 처리
+            if (keyword.length >= 2) {
+                _viewState.update { SearchUiState.Loading }
+                _characterList.update { null }
+                offset = 0
+                delay(300)
+                fetchResults(keyword, offset)
+            } else if (keyword.isNotEmpty()) {
+                _viewState.update { SearchUiState.Error("최소 2글자 입력 해야 합니다.") }
+            } else {
+                _viewState.update { SearchUiState.Wait }
             }
-            .collect()
-    }
+        }.catch { throwable ->
+            _viewState.update { SearchUiState.Error(throwable.toString()) }
+        }.launchIn(viewModelScope)
 
-    private fun collectResultAsUiModel() = viewModelScope.launch {
-        _characterList.filterNotNull()
-            .combine(getFavoriteCharacterUseCase()) { result, favoriteSet ->
-                result.map { it.toUiModel(favoriteSet.contains(it)) }
-            }.map { list ->
+    private fun collectResultAsUiModel() = _characterList.filterNotNull()
+        .combine(getFavoriteCharacterUseCase()) { result, favoriteSet ->
+            result.map { it.toUiModel(favoriteSet.contains(it)) }
+        }.map { list ->
             _viewState.update { SearchUiState.Success(list, loadMoreProgress = false) }
-        }.collect()
-    }
+        }.launchIn(viewModelScope)
 
     fun onLoadMoreCharacters() {
         viewModelScope.launch {
@@ -95,13 +91,15 @@ class SearchResultViewModel @Inject constructor(
         getCharactersUseCase(keyword, offset)
             .onEach { result ->
                 if (result.isEmpty()) {
-                    _viewState.update { SearchUiState.Error("검색 결과가 없습니다.") }
-                } else if (offset > 0 && result.size == _characterList.value?.size) {
-                    _viewState.update {
-                        SearchUiState.Success(
-                            characters = (it as SearchUiState.Success).characters,
-                            loadMoreProgress = false
-                        )
+                    if (offset > 0) {
+                        _viewState.update {
+                            SearchUiState.Success(
+                                characters = (it as SearchUiState.Success).characters,
+                                loadMoreProgress = false
+                            )
+                        }
+                    } else {
+                        _viewState.update { SearchUiState.Error("검색 결과가 없습니다.") }
                     }
                 } else {
                     _characterList.update { result.toList() }
