@@ -47,6 +47,11 @@ object Versions {
 
     //test
     const val JUNIT = "4.13.2"
+    const val MOCKK = "1.10.0"
+    const val KOTLIN_TEST = "1.8.0"
+    const val KOTLIN_TEST_JUNIT = "1.8.0"
+    const val CORE_TESTING = "2.1.0"
+    const val ANDROID_JUNIT_EXT = "1.1.5"
     const val ANDROID_JUNIT = "1.1.2"
     const val ESPRESSO_CORE = "3.3.0"
 }
@@ -139,7 +144,13 @@ object Libraries {
 }
 
 object UnitTest {
-    const val JUNIT         = "junit:junit:${Versions.JUNIT}"
+    const val JUNIT = "junit:junit:${Versions.JUNIT}"
+    const val MOCKK = "io.mockk:mockk:${Versions.MOCKK}"
+    const val KOTLIN_TEST = "org.jetbrains.kotlin:kotlin-test:${Versions.KOTLIN_TEST}"
+    const val KOTLIN_TEST_JUNIT = "org.jetbrains.kotlin:kotlin-test-junit:${Versions.KOTLIN_TEST_JUNIT}"
+    const val CORE_TESTING = "androidx.arch.core:core-testing:${Versions.CORE_TESTING}"
+    const val ANDROID_JUNIT_EXT = "androidx.test.ext:junit:${Versions.ANDROID_JUNIT_EXT}"
+    const val COROUTINE_TEST = "org.jetbrains.kotlinx:kotlinx-coroutines-test:${Versions.KOTLINX_COROUTINES}"
 }
 
 object AndroidTest {

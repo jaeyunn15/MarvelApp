@@ -40,8 +40,6 @@ dependencies {
 
     implementation(AndroidX.CORE_KTX)
 
-    implementation(AndroidX.PAGING_TEST)
-
     //kotlin
     implementation(Kotlin.KOTLIN_STDLIB)
 
@@ -64,4 +62,11 @@ dependencies {
 
     implementation(AndroidX.PREFERENCE)
 
+    testImplementation(UnitTest.JUNIT)
+    testImplementation(UnitTest.MOCKK)
+    testImplementation(UnitTest.KOTLIN_TEST)
+    testImplementation(UnitTest.KOTLIN_TEST_JUNIT)
+    testImplementation(UnitTest.CORE_TESTING)
+    testImplementation(UnitTest.COROUTINE_TEST)
+    androidTestImplementation(UnitTest.ANDROID_JUNIT_EXT)
 }
