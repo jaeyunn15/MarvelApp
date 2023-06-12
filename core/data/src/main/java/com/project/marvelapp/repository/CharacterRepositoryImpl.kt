@@ -12,8 +12,7 @@ class CharacterRepositoryImpl @Inject constructor(
 ) : CharacterRepository {
 
     private var isPaginationAvailable = true
-
-    override var cacheList: MutableList<CharacterEntity> = mutableListOf()
+    private var cacheList: MutableList<CharacterEntity> = mutableListOf()
 
     override fun getCharacters(keyword: String, offset: Int): Flow<List<CharacterEntity>> =
         flow {
