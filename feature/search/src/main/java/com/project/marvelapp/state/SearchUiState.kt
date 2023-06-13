@@ -1,16 +1,18 @@
 package com.project.marvelapp.state
 
-sealed class SearchUiState {
-    object Wait : SearchUiState()
+sealed class SearchUiState<out T> {
+    object Wait : SearchUiState<Nothing>()
 
-    object Loading : SearchUiState()
+    data class Loading<T>(val model: T?) : SearchUiState<T>()
 
-    data class Success(
-        val characters: List<com.project.marvelapp.common.CharacterUiModel>,
-        val loadMoreProgress: Boolean = false
-    ) : SearchUiState()
+    data class Success<T>(val model: T) : SearchUiState<T>()
 
-    data class Error(
-        val msg: String? = null
-    ) : SearchUiState()
+    data class Error<T>(val model: T?) : SearchUiState<T>()
+
+    fun getOrNull() = when (this) {
+        is Loading -> model
+        is Success -> model
+        is Error -> model
+        else -> null
+    }
 }

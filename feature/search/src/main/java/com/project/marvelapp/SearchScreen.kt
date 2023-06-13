@@ -38,7 +38,7 @@ import com.project.marvelapp.component.MessageBoxLayout
 import com.project.marvelapp.component.OnBottomReached
 import com.project.marvelapp.component.SearchTopBar
 import com.project.marvelapp.component.loadImageData
-import com.project.marvelapp.state.SearchUiState
+import com.project.marvelapp.state.SearchResultUiState
 
 @Composable
 fun SearchScreen(
@@ -73,7 +73,7 @@ fun SearchResultScreen(
     LaunchedEffect(searchKeyWord) {
         viewModel.updateKeyword(searchKeyWord)
     }
-    val viewState = viewModel.viewState.collectAsStateWithLifecycle().value
+    val viewState = viewModel.uiState.collectAsStateWithLifecycle().value
 
     CharacterScreen(
         viewState = viewState,
@@ -90,7 +90,7 @@ fun SearchResultScreen(
 
 @Composable
 fun CharacterScreen(
-    viewState: SearchUiState,
+    viewState: SearchResultUiState,
     modifier: Modifier = Modifier,
     onLoadMore: () -> Unit,
     onClickEvent: (CharacterUiModel) -> Unit
@@ -102,14 +102,25 @@ fun CharacterScreen(
                 .fillMaxWidth(), contentAlignment = Alignment.Center
         ) {
             when (viewState) {
-                is SearchUiState.Success -> {
+                SearchResultUiState.EmptyQuery -> {
+                    MessageBoxLayout(message = "최소 2글자 입력 해야 합니다.")
+                }
+
+                is SearchResultUiState.LoadFailed -> {
+                    MessageBoxLayout(message = viewState.errorMsg)
+                }
+
+                is SearchResultUiState.Success -> {
                     val lazyListState = rememberLazyGridState().apply {
                         OnBottomReached(
                             onLoadMore = onLoadMore,
                             buffer = 0,
                         )
                     }
-                    if (viewState.characters.isNotEmpty()) {
+
+                    if (viewState.isEmpty()) {
+                        MessageBoxLayout(message = "검색 결과가 없습니다.")
+                    } else {
                         Box(
                             modifier = Modifier.fillMaxHeight()
                         ) {
@@ -126,7 +137,7 @@ fun CharacterScreen(
                                     )
                                 }
                             }
-                            if (viewState.loadMoreProgress) {
+                            if (viewState.isPaging) {
                                 LinearProgressIndicator(
                                     modifier = Modifier
                                         .align(Alignment.BottomCenter)
@@ -137,19 +148,11 @@ fun CharacterScreen(
                     }
                 }
 
-                is SearchUiState.Error -> {
-                    viewState.msg?.let {
-                        MessageBoxLayout(message = it)
-                    }
+                SearchResultUiState.Loading -> {
+                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
                 }
 
-                SearchUiState.Wait -> Unit
-
-                SearchUiState.Loading -> {
-                    CircularProgressIndicator(
-                        modifier = modifier.align(Alignment.Center)
-                    )
-                }
+                SearchResultUiState.Wait -> Unit
             }
         }
     }

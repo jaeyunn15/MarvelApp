@@ -3,22 +3,24 @@ package com.project.marvelapp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.project.marvelapp.common.CharacterUiModel
+import com.project.marvelapp.common.Result
+import com.project.marvelapp.common.asResult
 import com.project.marvelapp.mapper.UiMapper.toEntity
 import com.project.marvelapp.mapper.UiMapper.toUiModel
-import com.project.marvelapp.state.SearchUiState
+import com.project.marvelapp.state.SearchResultUiState
+import com.project.marvelapp.state.SearchState
 import com.project.marvelapp.usecase.AddFavoriteCharacterUseCase
 import com.project.marvelapp.usecase.DeleteFavoriteCharacterUseCase
 import com.project.marvelapp.usecase.GetCharactersUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.mapLatest
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -29,63 +31,70 @@ class SearchResultViewModel @Inject constructor(
     private val addFavoriteCharacterUseCase: AddFavoriteCharacterUseCase,
     private val deleteFavoriteCharacterUseCase: DeleteFavoriteCharacterUseCase
 ) : ViewModel() {
-    private var offset = 0
-    private val _keyword = MutableStateFlow("")
+    private val _searchParamState = MutableStateFlow(SearchState(""))
+    private var _cachedList = listOf<CharacterUiModel>()
 
-    private val _viewState = MutableStateFlow<SearchUiState>(SearchUiState.Wait)
-    val viewState: StateFlow<SearchUiState> = _viewState.asStateFlow()
-
-    init {
-        collectKeywordState()
-    }
-
-    private fun collectKeywordState() = _keyword
-        .filter { it.isNotBlank() }
-        .mapLatest { keyword -> // 새로운 플로우 방출 시, 이전 계산 로직 취소 처리
-            if (keyword.length >= 2) {
-                _viewState.update { SearchUiState.Loading }
-                offset = 0
-                delay(300)
-                requestSearchResults(keyword, offset)
-            } else if (keyword.isNotEmpty()) {
-                _viewState.update { SearchUiState.Error("최소 2글자 입력 해야 합니다.") }
+    val uiState = _searchParamState
+        .filter { it.searchQuery.isNotBlank() }
+        .flatMapLatest { searchParamState ->
+            if (searchParamState.searchQuery.length < 2) {
+                flowOf(SearchResultUiState.EmptyQuery)
             } else {
-                _viewState.update { SearchUiState.Wait }
+                if (searchParamState.offset == 0) {
+                    delay(300)
+                }
+                handleResult(searchParamState)
             }
-        }.catch { throwable ->
-            _viewState.update { SearchUiState.Error(throwable.toString()) }
-        }.launchIn(viewModelScope)
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = SearchResultUiState.Wait,
+        )
+
+    private fun handleResult(state: SearchState) =
+        getCharactersUseCase(state.searchQuery, state.offset)
+            .asResult()
+            .map {
+                when (it) {
+                    is Result.Success -> {
+                        val result = it.data.map { it.toUiModel() }.apply {
+                            _cachedList = this
+                        }
+                        SearchResultUiState.Success(
+                            characters = result,
+                            isPaging = false
+                        )
+                    }
+
+                    is Result.Error -> {
+                        SearchResultUiState.LoadFailed(it.exception?.message.orEmpty())
+                    }
+
+                    Result.Loading -> {
+                        if (state.offset == 0) {
+                            SearchResultUiState.Loading
+                        } else {
+                            SearchResultUiState.Success(
+                                characters = _cachedList,
+                                isPaging = true
+                            )
+                        }
+                    }
+                }
+            }
 
     fun onLoadMoreCharacters() {
         viewModelScope.launch {
-            _viewState.update {
-                SearchUiState.Success(
-                    characters = (it as SearchUiState.Success).characters,
-                    loadMoreProgress = true
-                )
+            _searchParamState.update {
+                it.copy(offset = it.offset + 10)
             }
-            offset += 10
-            requestSearchResults(_keyword.value, offset)
         }
     }
 
-    private fun requestSearchResults(keyword: String, offset: Int) =
-        getCharactersUseCase(keyword, offset)
-            .onEach { result ->
-                if (result.isEmpty()) {
-                    _viewState.update { SearchUiState.Error("검색 결과가 없습니다.") }
-                } else {
-                    _viewState.update {
-                        SearchUiState.Success(
-                            characters = result.map { it.toUiModel() },
-                            loadMoreProgress = false
-                        )
-                    }
-                }
-            }.launchIn(viewModelScope)
-
     fun updateKeyword(keyword: String) {
-        _keyword.update { keyword }
+        _searchParamState.update {
+            it.copy(searchQuery = keyword, offset = 0)
+        }
     }
 
     fun addFavorite(model: CharacterUiModel) {
