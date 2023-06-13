@@ -83,25 +83,16 @@ class SearchResultViewModel @Inject constructor(
                 }
             }
 
-    fun onLoadMoreCharacters() {
-        viewModelScope.launch {
-            _searchParamState.update {
-                it.copy(offset = it.offset + 10)
-            }
-        }
-    }
-
-    fun updateKeyword(keyword: String) {
+    fun onLoadMoreCharacters() = viewModelScope.launch {
         _searchParamState.update {
-            it.copy(searchQuery = keyword, offset = 0)
+            it.copy(offset = it.offset + 10)
         }
     }
 
-    fun addFavorite(model: CharacterUiModel) {
-        addFavoriteCharacterUseCase(model.toEntity())
+    fun updateKeyword(keyword: String) = _searchParamState.update {
+        it.copy(searchQuery = keyword, offset = 0)
     }
 
-    fun removeFavorite(model: CharacterUiModel) {
-        deleteFavoriteCharacterUseCase(model.toEntity())
-    }
+    fun addFavorite(model: CharacterUiModel) = addFavoriteCharacterUseCase(model.toEntity())
+    fun removeFavorite(model: CharacterUiModel) = deleteFavoriteCharacterUseCase(model.toEntity())
 }
