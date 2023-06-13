@@ -44,7 +44,7 @@ fun FavoriteScreen(
             .fillMaxSize()
             .background(Color.Yellow)
     ) {
-        val viewState = viewModel.viewState.collectAsStateWithLifecycle().value
+        val viewState = viewModel.uiState.collectAsStateWithLifecycle().value
 
         when (viewState) {
             FavoriteUiState.Wait -> Unit
