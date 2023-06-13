@@ -83,10 +83,8 @@ class SearchResultViewModel @Inject constructor(
                 }
             }
 
-    fun onLoadMoreCharacters() = viewModelScope.launch {
-        _searchParamState.update {
-            it.copy(offset = it.offset + 10)
-        }
+    fun onLoadMoreCharacters() = _searchParamState.update {
+        it.copy(offset = it.offset + 10)
     }
 
     fun updateKeyword(keyword: String) = _searchParamState.update {
