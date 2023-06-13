@@ -41,7 +41,7 @@ class SearchResultViewModel @Inject constructor(
                 flowOf(SearchResultUiState.EmptyQuery)
             } else {
                 if (searchParamState.offset == 0) {
-                    delay(300)
+                    delay(REQUEST_DELAY_TIME)
                 }
                 handleResult(searchParamState)
             }
@@ -84,7 +84,7 @@ class SearchResultViewModel @Inject constructor(
             }
 
     fun onLoadMoreCharacters() = _searchParamState.update {
-        it.copy(offset = it.offset + 10)
+        it.copy(offset = it.offset + LOAD_ITEM_SIZE)
     }
 
     fun updateKeyword(keyword: String) = _searchParamState.update {
@@ -93,4 +93,9 @@ class SearchResultViewModel @Inject constructor(
 
     fun addFavorite(model: CharacterUiModel) = addFavoriteCharacterUseCase(model.toEntity())
     fun removeFavorite(model: CharacterUiModel) = deleteFavoriteCharacterUseCase(model.toEntity())
+
+    companion object {
+        const val REQUEST_DELAY_TIME = 300L
+        const val LOAD_ITEM_SIZE = 10
+    }
 }
