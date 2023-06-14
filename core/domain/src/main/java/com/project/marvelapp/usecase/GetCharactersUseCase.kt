@@ -15,7 +15,7 @@ class GetCharactersUseCase @Inject constructor(
         characterRepository.getCharacters(keyword, offset)
             .mapToUserSearchResult(userPrefRepository.getFavoriteCharacterFlow())
 }
-private fun Flow<List<CharacterEntity>>.mapToUserSearchResult(userDataStream: Flow<HashSet<CharacterEntity>>): Flow<List<CharacterEntity>> =
+private fun Flow<List<CharacterEntity>>.mapToUserSearchResult(userDataStream: Flow<LinkedHashSet<CharacterEntity>>): Flow<List<CharacterEntity>> =
     combine(userDataStream) { searchResult, userData ->
         searchResult.map {
             it.copy(isFavorite = userData.contains(it))

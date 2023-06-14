@@ -7,9 +7,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 class TestUserRepository: UserPrefRepository {
-    private var favoriteSet = hashSetOf<CharacterEntity>()
+    private var favoriteSet = linkedSetOf<CharacterEntity>()
 
-    override fun getFavoriteCharacterFlow(): Flow<HashSet<CharacterEntity>> {
+    override fun getFavoriteCharacterFlow(): Flow<LinkedHashSet<CharacterEntity>> {
         return flow {
             emit(favoriteSet)
         }

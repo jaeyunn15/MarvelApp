@@ -4,7 +4,7 @@ import com.project.marvelapp.entity.CharacterEntity
 import kotlinx.coroutines.flow.Flow
 
 interface UserPrefRepository {
-    fun getFavoriteCharacterFlow(): Flow<HashSet<CharacterEntity>>
+    fun getFavoriteCharacterFlow(): Flow<LinkedHashSet<CharacterEntity>>
     fun addCharacter(character: CharacterEntity)
     fun removeCharacter(character: CharacterEntity)
 }

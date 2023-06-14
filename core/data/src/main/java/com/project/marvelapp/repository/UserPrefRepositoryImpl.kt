@@ -19,13 +19,14 @@ class UserPrefRepositoryImpl @Inject constructor(
     private val userPrefDataSource: UserPrefDataSource
 ): UserPrefRepository {
 
-    override fun getFavoriteCharacterFlow(): Flow<HashSet<CharacterEntity>> =
+    override fun getFavoriteCharacterFlow(): Flow<LinkedHashSet<CharacterEntity>> =
         userPrefDataSource.prefs.getSharedPreferenceFlow(CHARACTER_FAVORITE).map {
             userPrefDataSource.favoriteCharacterSets
         }.onStart {
-            emit(hashSetOf())
+            emit(linkedSetOf())
         }.map {
-            it.map(CharacterVO::toCharacterEntity).toHashSet()
+            it.sortedWith { o1, o2 -> o1.savedTime.compareTo(o2.savedTime) }
+                .mapTo(LinkedHashSet(), CharacterVO::toCharacterEntity)
         }.conflate()
 
     @RequiresApi(Build.VERSION_CODES.N)
