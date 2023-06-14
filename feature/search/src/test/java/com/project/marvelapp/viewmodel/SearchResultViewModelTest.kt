@@ -1,9 +1,9 @@
 package com.project.marvelapp.viewmodel
 
 import com.project.marvelapp.SearchResultViewModel
-import com.project.marvelapp.TestCharacterRepository
+import com.project.marvelapp.repository.TestCharacterRepository
 import com.project.marvelapp.TestCoroutinesRule
-import com.project.marvelapp.TestUserRepository
+import com.project.marvelapp.repository.TestUserRepository
 import com.project.marvelapp.state.SearchResultUiState
 import com.project.marvelapp.testCharactersData
 import com.project.marvelapp.testPagingCharactersData

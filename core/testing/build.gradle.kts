@@ -37,6 +37,7 @@ android {
 dependencies {
     implementation(Kotlin.COROUTINES_CORE)
     implementation(Kotlin.KOTLIN_STDLIB)
+    implementation(Libraries.RETROFIT_CONVERTER_GSON)
     implementation("androidx.annotation:annotation-jvm:+")
 
     testImplementation(UnitTest.JUNIT)
@@ -46,8 +47,8 @@ dependencies {
     testImplementation(UnitTest.CORE_TESTING)
     testImplementation(UnitTest.COROUTINE_TEST)
     androidTestImplementation(UnitTest.ANDROID_JUNIT_EXT)
-    implementation(project(":core:model"))
 
+    implementation(project(":core:model"))
     implementation(project(":core:data"))
     implementation(project(":core:domain"))
 }

@@ -1,9 +1,8 @@
-package com.project.marvelapp
+package com.project.marvelapp.repository
 
 import android.os.Build
 import androidx.annotation.RequiresApi
 import com.project.marvelapp.entity.CharacterEntity
-import com.project.marvelapp.repository.UserPrefRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 

@@ -1,5 +1,6 @@
 package com.project.marvelapp
 
+import com.project.marvelapp.repository.TestUserRepository
 import com.project.marvelapp.rule.TestCoroutinesRule
 import com.project.marvelapp.usecase.AddFavoriteCharacterUseCase
 import com.project.marvelapp.usecase.DeleteFavoriteCharacterUseCase
