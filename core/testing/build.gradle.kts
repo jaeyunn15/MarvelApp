@@ -46,8 +46,8 @@ dependencies {
     testImplementation(UnitTest.CORE_TESTING)
     testImplementation(UnitTest.COROUTINE_TEST)
     androidTestImplementation(UnitTest.ANDROID_JUNIT_EXT)
+    implementation(project(":core:model"))
 
-    implementation(project(":core:common"))
     implementation(project(":core:data"))
     implementation(project(":core:domain"))
 }
