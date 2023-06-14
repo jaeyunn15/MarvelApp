@@ -129,7 +129,8 @@ fun CharacterScreen(
                                 columns = GridCells.Fixed(2)
                             ) {
                                 items(
-                                    count = viewState.characters.size
+                                    count = viewState.characters.size,
+                                    key = { viewState.characters[it].id }
                                 ) { index ->
                                     ImageWithFavorite(
                                         item = viewState.characters[index],
