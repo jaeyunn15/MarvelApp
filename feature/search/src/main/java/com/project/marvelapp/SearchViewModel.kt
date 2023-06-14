@@ -15,14 +15,12 @@ class SearchViewModel @Inject constructor() : ViewModel() {
         MutableStateFlow(SearchUiState.Wait)
     val searchKeyword = _searchKeyword.asStateFlow()
 
-    fun setSearchString(value: String) {
-        _searchKeyword.update {
-            SearchUiState.Success(value)
-        }
+    fun setSearchString(value: String) = _searchKeyword.update {
+        SearchUiState.Success(value)
     }
 
-    fun clearSearchString() {
-        _searchKeyword.update { SearchUiState.Wait }
+    fun clearSearchString() = _searchKeyword.update {
+        SearchUiState.Wait
     }
 
 }
