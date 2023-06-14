@@ -47,6 +47,7 @@ dependencies {
     implementation(project(":core:designsystem"))
     implementation(project(":core:domain"))
     implementation(project(":core:common"))
+    implementation(project(":core:testing"))
 
     implementation(AndroidX.CORE_KTX)
     implementation(AndroidX.APP_COMPAT)
@@ -112,4 +113,13 @@ dependencies {
 
     implementation(Compose.COMPOSE_LIFECYCLE_RUNTIME)
     implementation(Compose.COMPOSE_ACTIVITY)
+
+    //unittest
+    testImplementation(UnitTest.JUNIT)
+    testImplementation(UnitTest.MOCKK)
+    testImplementation(UnitTest.KOTLIN_TEST)
+    testImplementation(UnitTest.KOTLIN_TEST_JUNIT)
+    testImplementation(UnitTest.CORE_TESTING)
+    testImplementation(UnitTest.COROUTINE_TEST)
+    androidTestImplementation(UnitTest.ANDROID_JUNIT_EXT)
 }

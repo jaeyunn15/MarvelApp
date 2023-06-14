@@ -37,6 +37,7 @@ android {
 dependencies {
     implementation(Kotlin.COROUTINES_CORE)
     implementation(Kotlin.KOTLIN_STDLIB)
+    implementation("androidx.annotation:annotation-jvm:+")
 
     testImplementation(UnitTest.JUNIT)
     testImplementation(UnitTest.MOCKK)
