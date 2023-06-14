@@ -1,5 +1,7 @@
-package com.project.marvelapp
+package com.project.marvelapp.viewmodel
 
+import com.project.marvelapp.SearchViewModel
+import com.project.marvelapp.TestCoroutinesRule
 import com.project.marvelapp.state.SearchUiState
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
