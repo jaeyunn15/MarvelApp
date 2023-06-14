@@ -1,4 +1,4 @@
-package com.project.marvelapp
+package com.project.marvelapp.repository
 
 import com.project.marvelapp.entity.CharacterEntity
 import com.project.marvelapp.repository.CharacterRepository

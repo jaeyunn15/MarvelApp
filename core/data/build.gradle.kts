@@ -37,6 +37,7 @@ android {
 
 dependencies {
     implementation(project(":core:domain"))
+    testImplementation(project(":core:testing"))
 
     implementation(AndroidX.CORE_KTX)
 
