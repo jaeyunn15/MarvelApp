@@ -2,7 +2,8 @@ package com.project.marvelapp.repository
 
 import com.project.marvelapp.datasource.remote.CharacterDataSource
 import com.project.marvelapp.entity.CharacterEntity
-import com.project.marvelapp.mapper.CharacterMapper.toCharacterEntity
+import com.project.marvelapp.mapper.toCharacterEntity
+import com.project.marvelapp.model.response.CharacterResponse
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
@@ -39,9 +40,8 @@ class CharacterRepositoryImpl @Inject constructor(
                     if (result.characterDataContainerResponse.results.isEmpty()) {
                         emit(emptyList())
                     } else {
-                        result.characterDataContainerResponse.results.map {
-                            cacheList.add(it.toCharacterEntity())
-                        }
+                        val list = result.characterDataContainerResponse.results.map(CharacterResponse::toCharacterEntity)
+                        cacheList.addAll(list)
                         emit(cacheList)
                     }
                 }

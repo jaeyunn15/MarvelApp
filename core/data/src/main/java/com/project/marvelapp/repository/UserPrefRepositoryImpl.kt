@@ -6,8 +6,8 @@ import com.project.marvelapp.datasource.local.UserPrefDataSource
 import com.project.marvelapp.datasource.local.UserPrefDataSourceImpl.Companion.CHARACTER_FAVORITE
 import com.project.marvelapp.entity.CharacterEntity
 import com.project.marvelapp.getSharedPreferenceFlow
-import com.project.marvelapp.mapper.CharacterMapper.toCharacterEntity
-import com.project.marvelapp.mapper.CharacterMapper.toCharacterVO
+import com.project.marvelapp.mapper.toCharacterEntity
+import com.project.marvelapp.mapper.toCharacterVO
 import com.project.marvelapp.model.vo.CharacterVO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.conflate
@@ -25,9 +25,7 @@ class UserPrefRepositoryImpl @Inject constructor(
         }.onStart {
             emit(hashSetOf())
         }.map {
-            it.map {
-                it.toCharacterEntity()
-            }.toHashSet()
+            it.map(CharacterVO::toCharacterEntity).toHashSet()
         }.conflate()
 
     @RequiresApi(Build.VERSION_CODES.N)
