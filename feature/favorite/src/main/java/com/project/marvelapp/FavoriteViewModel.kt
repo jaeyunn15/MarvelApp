@@ -10,9 +10,9 @@ import com.project.marvelapp.usecase.DeleteFavoriteCharacterUseCase
 import com.project.marvelapp.usecase.GetFavoriteCharacterUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
@@ -23,9 +23,8 @@ class FavoriteViewModel @Inject constructor(
     private val deleteFavoriteCharacterUseCase: DeleteFavoriteCharacterUseCase
 ) : ViewModel() {
 
-    val uiState = getFavoriteCharacterUseCase()
-        .onStart { FavoriteUiState.Loading }
-        .onEach { result ->
+    val uiState: StateFlow<FavoriteUiState> = getFavoriteCharacterUseCase()
+        .mapLatest { result ->
             val data = result.map { it.toUiModel(true) }
             FavoriteUiState.Success(data)
         }

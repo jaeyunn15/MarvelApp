@@ -22,7 +22,6 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -88,7 +87,11 @@ class SearchResultViewModel @Inject constructor(
     }
 
     fun updateKeyword(keyword: String) = _searchParamState.update {
-        it.copy(searchQuery = keyword, offset = 0)
+        if (keyword != it.searchQuery) {
+            it.copy(searchQuery = keyword, offset = 0)
+        } else {
+            it
+        }
     }
 
     fun addFavorite(model: CharacterUiModel) = addFavoriteCharacterUseCase(model.toEntity())
