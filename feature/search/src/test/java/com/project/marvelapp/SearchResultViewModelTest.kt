@@ -113,4 +113,37 @@ class SearchResultViewModelTest {
 
         collectJob.cancel()
     }
+
+    @Test
+    fun stateIsSuccessPaging_withOffsetChange() = coroutineRule.runTest {
+        val collectJob = launch {
+            searchResultViewModel.uiState.collect()
+        }
+
+        characterTestRepository.addCharacters(testCharactersData) //반환 될 테스트 데이터 추가
+
+        userTestRepository.addFavoriteSet(hashSetOf()) //좋아요 정보 없는 상태로 추가
+
+        searchResultViewModel.updateKeyword("xxx") //검색을 위해 키워드 추가
+
+        delay(SearchResultViewModel.REQUEST_DELAY_TIME)
+
+        runCurrent()
+
+        val beforeResult = searchResultViewModel.uiState.value
+        assertIs<SearchResultUiState.Success>(beforeResult)
+        assertEquals(3, beforeResult.characters.size)
+
+        characterTestRepository.addCharacters(testPagingCharactersData) //반환 될 페이징 테스트 데이터 추가
+
+        searchResultViewModel.onLoadMoreCharacters() //추가 검색 요청
+
+        delay(SearchResultViewModel.REQUEST_DELAY_TIME)
+
+        val afterResult = searchResultViewModel.uiState.value
+        assertIs<SearchResultUiState.Success>(afterResult)
+        assertEquals(6, afterResult.characters.size)
+
+        collectJob.cancel()
+    }
 }
