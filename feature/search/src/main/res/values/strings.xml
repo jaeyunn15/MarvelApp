@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="min_two_word_warning_message">최소 2글자 입력 해야 합니다.</string>
+    <string name="empty_search_result_message">검색 결과가 없습니다.</string>
+</resources>

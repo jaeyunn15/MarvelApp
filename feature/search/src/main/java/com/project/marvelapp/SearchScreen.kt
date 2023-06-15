@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
@@ -38,6 +39,7 @@ import com.project.marvelapp.component.MessageBoxLayout
 import com.project.marvelapp.component.OnBottomReached
 import com.project.marvelapp.component.SearchTopBar
 import com.project.marvelapp.component.loadImageData
+import com.project.marvelapp.feature.search.R
 import com.project.marvelapp.state.SearchResultUiState
 
 @Composable
@@ -103,7 +105,7 @@ fun CharacterScreen(
         ) {
             when (viewState) {
                 SearchResultUiState.EmptyQuery -> {
-                    MessageBoxLayout(message = "최소 2글자 입력 해야 합니다.")
+                    MessageBoxLayout(message = stringResource(R.string.min_two_word_warning_message))
                 }
 
                 is SearchResultUiState.LoadFailed -> {
@@ -119,7 +121,7 @@ fun CharacterScreen(
                     }
 
                     if (viewState.isEmpty()) {
-                        MessageBoxLayout(message = "검색 결과가 없습니다.")
+                        MessageBoxLayout(message = stringResource(R.string.empty_search_result_message))
                     } else {
                         Box(
                             modifier = Modifier.fillMaxHeight()

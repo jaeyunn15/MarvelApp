@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="empty_favorite_item_message">좋아요를 누른 아이템이 없습니다.</string>
+</resources>

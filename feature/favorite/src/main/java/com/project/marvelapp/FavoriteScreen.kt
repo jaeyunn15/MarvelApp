@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
@@ -33,6 +34,7 @@ import com.project.marvelapp.common.CharacterUiModel
 import com.project.marvelapp.component.CustomProgressBar
 import com.project.marvelapp.component.MessageBoxLayout
 import com.project.marvelapp.component.loadImageData
+import com.project.marvelapp.feature.favorite.R
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
@@ -57,7 +59,7 @@ fun FavoriteScreen(
             is FavoriteUiState.Success -> {
                 if (viewState.characters.isEmpty()){
                     MessageBoxLayout(
-                        message = "좋아요를 누른 아이템이 없습니다."
+                        message = stringResource(R.string.empty_favorite_item_message)
                     )
                 } else {
                     LazyVerticalGrid(
