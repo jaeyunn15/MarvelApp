@@ -5,8 +5,9 @@ import androidx.lifecycle.viewModelScope
 import com.project.marvelapp.common.CharacterUiModel
 import com.project.marvelapp.common.Result
 import com.project.marvelapp.common.asResult
-import com.project.marvelapp.mapper.UiMapper.toEntity
-import com.project.marvelapp.mapper.UiMapper.toUiModel
+import com.project.marvelapp.entity.CharacterEntity
+import com.project.marvelapp.mapper.toEntity
+import com.project.marvelapp.mapper.toUiModel
 import com.project.marvelapp.state.SearchResultUiState
 import com.project.marvelapp.state.SearchState
 import com.project.marvelapp.usecase.AddFavoriteCharacterUseCase
@@ -53,20 +54,19 @@ class SearchResultViewModel @Inject constructor(
     private fun handleResult(state: SearchState) =
         getCharactersUseCase(state.searchQuery, state.offset)
             .asResult()
-            .map {
-                when (it) {
+            .map { result ->
+                when (result) {
                     is Result.Success -> {
-                        val result = it.data.map { it.toUiModel() }.apply {
-                            _cachedList = this
-                        }
                         SearchResultUiState.Success(
-                            characters = result,
+                            characters = result.data.map(CharacterEntity::toUiModel).apply {
+                                _cachedList = this
+                            },
                             isPaging = false
                         )
                     }
 
                     is Result.Error -> {
-                        SearchResultUiState.LoadFailed(it.exception?.message.orEmpty())
+                        SearchResultUiState.LoadFailed(result.exception?.message.orEmpty())
                     }
 
                     Result.Loading -> {

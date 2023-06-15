@@ -2,9 +2,8 @@ package com.project.marvelapp
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.project.marvelapp.UiMapper.toEntity
-import com.project.marvelapp.UiMapper.toUiModel
 import com.project.marvelapp.common.CharacterUiModel
+import com.project.marvelapp.entity.CharacterEntity
 import com.project.marvelapp.usecase.AddFavoriteCharacterUseCase
 import com.project.marvelapp.usecase.DeleteFavoriteCharacterUseCase
 import com.project.marvelapp.usecase.GetFavoriteCharacterUseCase
@@ -13,6 +12,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
@@ -24,9 +24,9 @@ class FavoriteViewModel @Inject constructor(
 ) : ViewModel() {
 
     val uiState: StateFlow<FavoriteUiState> = getFavoriteCharacterUseCase()
+        .onStart { FavoriteUiState.Loading }
         .mapLatest { result ->
-            val data = result.map { it.toUiModel(true) }
-            FavoriteUiState.Success(data)
+            FavoriteUiState.Success(result.map(CharacterEntity::toUiModel))
         }
         .catch { throwable ->
             FavoriteUiState.Error(throwable.message)
