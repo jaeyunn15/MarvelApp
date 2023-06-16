@@ -39,8 +39,6 @@ android {
 dependencies {
     implementation(AndroidX.CORE_KTX)
 
-    implementation(AndroidX.PAGING_TEST)
-
     //kotlin
     implementation(Kotlin.KOTLIN_STDLIB)
 
@@ -59,7 +57,4 @@ dependencies {
     //hilt
     implementation(Google.HILT_ANDROID)
     kapt(Google.HILT_ANDROID_COMPILER)
-
-    implementation(AndroidX.PREFERENCE)
-
 }

@@ -47,20 +47,15 @@ dependencies {
     implementation(project(":core:designsystem"))
     implementation(project(":core:domain"))
     implementation(project(":core:model"))
-    implementation(project(":core:testing"))
+    testImplementation(project(":core:testing"))
 
     implementation(AndroidX.CORE_KTX)
     implementation(AndroidX.APP_COMPAT)
-    implementation(AndroidX.CONSTRAINTLAYOUT)
-    implementation(AndroidX.FRAGMENT_KTX)
     implementation(AndroidX.LIFECYCLE_RUNTIME_KTX)
     implementation(AndroidX.LIFECYCLE_VIEWMODEL_KTX)
-    implementation(AndroidX.LIFECYCLE_LIVEDATA_KTX)
 
     //Activity extension, referring with  "by viewModels"
     implementation(AndroidX.ACTIVITY_KTX)
-
-    implementation(Google.MATERIAL)
 
     //retrofit + gson
     implementation(Libraries.RETROFIT)
@@ -73,20 +68,9 @@ dependencies {
     //Coroutines
     implementation(Kotlin.COROUTINES_ANDROID)
 
-    //Glide
-    implementation(Libraries.GLIDE)
-    kapt (Libraries.KAPT_GLIDE_COMPILER)
-
-    //Paging
-    implementation(AndroidX.PAGING)
-    implementation(AndroidX.PAGING_COMPOSE)
-
     //Hilt
     implementation(Google.HILT_ANDROID)
     kapt(Google.HILT_ANDROID_COMPILER)
-
-    //preference
-    implementation(AndroidX.PREFERENCE)
 
     //compose coil
     implementation(Libraries.COIL)
@@ -95,11 +79,6 @@ dependencies {
     //hilt
     implementation(Google.HILT_COMPOSE)
     implementation(Google.NAVIGATION_COMPOSE)
-
-    implementation(Google.DATASTORE_CORE)
-    implementation(Google.DATASTORE_PREFERENCE)
-
-    implementation(Libraries.SPLASH_SCREEN)
 
     //compose
     implementation(platform("androidx.compose:compose-bom:2023.01.00"))

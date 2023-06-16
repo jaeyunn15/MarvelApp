@@ -41,9 +41,6 @@ android {
 }
 
 dependencies {
-    implementation(Kotlin.COROUTINES_CORE)
-    implementation(Kotlin.KOTLIN_STDLIB)
-
     //compose coil
     implementation(Libraries.COIL)
     implementation(Libraries.COIL_COMPOSE)

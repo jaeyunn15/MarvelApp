@@ -15,3 +15,7 @@ plugins {
     id("com.google.dagger.hilt.android") version "2.45" apply false
     id("org.jetbrains.kotlin.jvm") version "1.5.31" apply false
 }
+
+apply {
+    from("gradle/projectDependencyGraph.gradle")
+}

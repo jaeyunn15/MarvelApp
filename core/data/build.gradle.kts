@@ -74,7 +74,6 @@ dependencies {
 
     //hilt
     implementation(Google.HILT_ANDROID)
-    implementation(project(mapOf("path" to ":core:domain")))
     kapt(Google.HILT_ANDROID_COMPILER)
 
     implementation(AndroidX.PREFERENCE)
