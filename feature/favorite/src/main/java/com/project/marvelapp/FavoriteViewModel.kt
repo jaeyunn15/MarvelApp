@@ -26,7 +26,7 @@ class FavoriteViewModel @Inject constructor(
     val uiState: StateFlow<FavoriteUiState> = getFavoriteCharacterUseCase()
         .onStart { FavoriteUiState.Loading }
         .mapLatest { result ->
-            FavoriteUiState.Success(result.map(CharacterEntity::toUiModel))
+            FavoriteUiState.Success(result.map(CharacterEntity::toFavoriteUiModel))
         }
         .catch { throwable ->
             FavoriteUiState.Error(throwable.message)
