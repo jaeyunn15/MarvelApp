@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = "com.project.marvelapp"
-    compileSdk = 33
+    compileSdk = Versions.COMPILE_SDK_VERSION
 
     defaultConfig {
         minSdk = Versions.MIN_SDK_VERSION

@@ -1,3 +1,5 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
@@ -6,11 +8,22 @@ plugins {
 }
 
 android {
-    compileSdk = 32
+    compileSdk = Versions.COMPILE_SDK_VERSION
 
     defaultConfig {
-        minSdk = 23
-        targetSdk = 32
+        minSdk = Versions.MIN_SDK_VERSION
+        targetSdk = Versions.TARGET_SDK_VERSION
+
+        buildConfigField(
+            "String",
+            "PRIVATE_KEY",
+            gradleLocalProperties(rootDir).getProperty("PRIVATE_KEY")
+        )
+        buildConfigField(
+            "String",
+            "PUBLIC_KEY",
+            gradleLocalProperties(rootDir).getProperty("PUBLIC_KEY")
+        )
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -24,6 +37,9 @@ android {
                 "proguard-rules.pro"
             )
         }
+    }
+    buildFeatures {
+        buildConfig = true
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
