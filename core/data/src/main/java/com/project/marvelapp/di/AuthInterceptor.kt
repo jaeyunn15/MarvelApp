@@ -1,5 +1,6 @@
 package com.project.marvelapp.di
 
+import com.project.marvelapp.core.data.BuildConfig
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
@@ -13,8 +14,8 @@ class AuthInterceptor: Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val ts = "${System.currentTimeMillis() / 1000}"
-        val privateKey = "e759784d43a3d157c65a3e51be65770d8874ec1e"
-        val publicKey = "9041df502c663cb02f6a091a82a8b9de"
+        val privateKey = BuildConfig.PRIVATE_KEY
+        val publicKey = BuildConfig.PUBLIC_KEY
         val url = chain.request().url
             .newBuilder()
             .addQueryParameter("ts", ts)
