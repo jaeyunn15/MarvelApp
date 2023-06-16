@@ -48,12 +48,12 @@ class FavoriteViewModelTest {
     }
 
     @Test
-    fun stateIsInitiallyWait() = coroutineRule.runTest {
+    fun `아무 이벤트가 없을 경우, 초기 상태는 Wait`() = coroutineRule.runTest {
         assertEquals(FavoriteUiState.Wait, favoriteViewModel.uiState.value)
     }
 
     @Test
-    fun stateIsSuccess_withEmptyFavoriteSet() = coroutineRule.runTest {
+    fun `좋아요 데이터 조회 시, 0개의 데이터가 있다면, 성공적인 응답과 함께 0개의 응답 반환`() = coroutineRule.runTest {
         val collectJob = launch {
             favoriteViewModel.uiState.collect()
         }
@@ -67,7 +67,7 @@ class FavoriteViewModelTest {
     }
 
     @Test
-    fun stateIsSuccess_withOneFavoriteSet() = coroutineRule.runTest {
+    fun `좋아요 데이터 조회 시, 4개의 데이터가 있다면, 성공적인 응답과 함께 4개의 응답 반환`() = coroutineRule.runTest {
         val collectJob = launch {
             favoriteViewModel.uiState.collect()
         }
@@ -85,7 +85,7 @@ class FavoriteViewModelTest {
     }
 
     @Test
-    fun stateIsSuccess_withRemoveOneFavoriteSet() = coroutineRule.runTest {
+    fun `현재 좋아요 데이터가 4개가 있는 상태에서, 1개를 좋아요 취소 한다면, 성공적인 응답과 함께 3개의 응답 반환`() = coroutineRule.runTest {
         //초기 데이터 4개 삽입
         testFavoriteCharacterUiModelList.forEach {
             favoriteViewModel.addFavorite(it)

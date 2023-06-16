@@ -51,12 +51,12 @@ class SearchResultViewModelTest {
     }
 
     @Test
-    fun stateIsInitiallyLoading() = coroutineRule.runTest {
+    fun `아무 이벤트가 없을 경우, 초기 상태는 Wait`() = coroutineRule.runTest {
         assertEquals(SearchResultUiState.Wait, searchResultViewModel.uiState.value)
     }
 
     @Test
-    fun stateIsEmptyQuery_withOneWordSearchQuery() = coroutineRule.runTest {
+    fun `하나의 단어로 키워드를 업데이트 하는 경우, EmptyQuery 상태로 변경`() = coroutineRule.runTest {
         val collectJob = launch {
             searchResultViewModel.uiState.collect()
         }
@@ -71,7 +71,7 @@ class SearchResultViewModelTest {
     }
 
     @Test
-    fun stateIsSuccess_withMatchingQuery() = coroutineRule.runTest {
+    fun `2개 이상의 단어로 이뤄진 키워드 입력 시, 매칭되는 결과가 있다면 Success 상태와 성공적인 응답 반환`() = coroutineRule.runTest {
         val collectJob = launch {
             searchResultViewModel.uiState.collect()
         }
@@ -96,7 +96,7 @@ class SearchResultViewModelTest {
     }
 
     @Test
-    fun stateIsSuccess_withEmptyMatchingQuery() = coroutineRule.runTest {
+    fun `2개 이상의 단어로 이뤄진 키워드 입력 시, 매칭되는 결과가 없다면 Success 상태와 성공적인 비어있는 리스트 응답 반환`() = coroutineRule.runTest {
         val collectJob = launch {
             searchResultViewModel.uiState.collect()
         }
@@ -121,7 +121,7 @@ class SearchResultViewModelTest {
     }
 
     @Test
-    fun stateIsSuccessPaging_withOffsetChange() = coroutineRule.runTest {
+    fun `기존 응답 결과 추가 후, offset 값만 변경 하였을 때, 페이징 이벤트 발생으로 Success로 상태가 다시 변하며 응답 결과가 추가됨`() = coroutineRule.runTest {
         val collectJob = launch {
             searchResultViewModel.uiState.collect()
         }

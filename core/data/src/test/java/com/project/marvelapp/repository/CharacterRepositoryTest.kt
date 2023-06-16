@@ -29,7 +29,7 @@ class CharacterRepositoryTest {
     }
 
     @Test
-    fun sameResultSize_withSuccessRequest() = coroutineRule.runTest {
+    fun `정상적으로 조회하는 경우, 성공적인 데이터를 반환`() = coroutineRule.runTest {
         characterDataSource.setSuccessFlag(true)
         characterDataSource.addResponseList(fakeSuccessCharacterResponse)
 
@@ -43,7 +43,7 @@ class CharacterRepositoryTest {
     }
 
     @Test
-    fun successButEmptySize_withNoRespondingRequest() = coroutineRule.runTest {
+    fun `정상적으로 조회하는 경우, 성공적인 데이터를 반환하지만 빈 리스트인 경우`() = coroutineRule.runTest {
         characterDataSource.setSuccessFlag(true)
         characterDataSource.addResponseList(emptyList())
 
@@ -57,7 +57,7 @@ class CharacterRepositoryTest {
     }
 
     @Test
-    fun original10Data_pagination10Data() = coroutineRule.runTest {
+    fun `페이징 조회하는 경우, 기존 리스트에 추가되어 응답 결과가 반환`() = coroutineRule.runTest {
         characterDataSource.setSuccessFlag(true)
         characterDataSource.addResponseList(fakeSuccessCharacterResponse)
 
@@ -79,7 +79,7 @@ class CharacterRepositoryTest {
     }
 
     @Test
-    fun original10Data_pagination2Data() = coroutineRule.runTest {
+    fun `페이징 조회하는 경우, 기존 리스트 사이즈 대비 페이징 결과 리스트 사이즈가 증가한 응답 결과 반환`() = coroutineRule.runTest {
         characterDataSource.setSuccessFlag(true)
         characterDataSource.addResponseList(fakeSuccessCharacterResponse)
 
